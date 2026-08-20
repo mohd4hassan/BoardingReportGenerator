@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon"
+    href="https://azammarine.com/wp-content/uploads/2025/10/cropped-Azam-Marine-Logo-New-White-Stroke-32x32.png"
+    sizes="32x32" />
+  <link rel="icon"
+    href="https://azammarine.com/wp-content/uploads/2025/10/cropped-Azam-Marine-Logo-New-White-Stroke-192x192.png"
+    sizes="192x192" />
+  <link rel="apple-touch-icon"
+    href="https://azammarine.com/wp-content/uploads/2025/10/cropped-Azam-Marine-Logo-New-White-Stroke-180x180.png" />
+  <meta name="msapplication-TileImage"
+    content="https://azammarine.com/wp-content/uploads/2025/10/cropped-Azam-Marine-Logo-New-White-Stroke-270x270.png" />
+  <title>Boarding Report Generator</title>
+  <style>
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #f3f4f6;
+      color: #111827
+    }
+
+    header {
+      background: #0f172a;
+      color: #fff;
+      padding: 18px 16px;
+      text-align: center
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 16px
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 10px #0000000b
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 5px
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 44px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      padding: 0 11px;
+      font-size: 16px;
+      background: #fff;
+      color: #111827
+    }
+
+    .figures {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 18px
+    }
+
+    .pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #f8fafc
+    }
+
+    .comp-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px
+    }
+
+    h2 {
+      font-size: 15px;
+      margin: 0 0 12px
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px
+    }
+
+    button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 9px;
+      padding: 0 14px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer
+    }
+
+    .primary {
+      background: #0f172a;
+      color: #fff
+    }
+
+    .secondary {
+      background: #e2e8f0;
+      color: #0f172a
+    }
+
+    .danger {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .preview {
+      white-space: pre-wrap;
+      background: #0b1220;
+      color: #f8fafc;
+      border-radius: 10px;
+      padding: 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 14px;
+      line-height: 1.55;
+      overflow: auto
+    }
+
+    .note {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 8px
+    }
+
+    .status {
+      font-size: 13px;
+      color: #166534;
+      min-height: 18px;
+      margin-top: 8px
+    }
+
+    .comp-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px
+    }
+
+    .comp-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none
+    }
+
+    .comp-item input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: #0f172a
+    }
+
+    .comp-item:has(input:checked) {
+      background: #0f172a;
+      color: #fff;
+      border-color: #0f172a
+    }
+
+    #busOptionalWrap .comp-item {
+      border-radius: 9px;
+      padding: 9px 12px
+    }
+
+    #busOptionalWrap .comp-item input {
+      width: 16px;
+      height: 16px
+    }
+
+    .small {
+      font-size: 12px;
+      color: #64748b
+    }
+
+    .field input:focus,
+    .field select:focus {
+      outline: 2px solid #94a3b8;
+      outline-offset: 1px
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #e2e8f0;
+      margin: 16px 0
+    }
+
+    @media(max-width:600px) {
+      main {
+        padding: 10px
+      }
+
+      .grid,
+      .figures {
+        grid-template-columns: 1fr
+      }
+
+      .actions {
+        grid-template-columns: 1fr
+      }
+
+      .card {
+        padding: 13px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Boarding Report Generator</h1>
+  </header>
+  <main>
+    <section class="card">
+      <h2>Report details</h2>
+      <div class="grid">
+        <div class="field"><label>Date</label><input id="date" type="date"></div>
+        <div class="field"><label>Vessel</label><select id="vessel">
+            <option>KLM 4</option>
+            <option>KLM 5</option>
+            <option>KLM 6</option>
+            <option selected>KLM 9</option>
+            <option>KLM 7</option>
+            <option>KLM 8</option>
+          </select></div>
+        <div class="field"><label>Departure</label><select id="departure">
+            <option>07.00Hrs</option>
+            <option>09.30Hrs</option>
+            <option>12.30Hrs</option>
+            <option>16.00Hrs</option>
+            <option value="custom">Custom</option>
+          </select></div>
+        <div class="field" id="customWrap" style="display:none"><label>Custom departure</label><input
+            id="customDeparture" placeholder="e.g. 14.30Hrs"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Boarding Figures</h2>
+      <div id="figures" class="figures"></div>
+      <p class="small">BUS and BFX are available for KLM 4, 5 and 6. For KLM 7, 8 and 9 they can be enabled optionally.</p>
+      <div id="busOptionalWrap" style="display:none;margin-top:12px">
+        <label class="comp-item"><input id="enableBus" type="checkbox"> Add BUS / BFX for this vessel</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>COMP</h2>
+      <div class="comp-controls">
+        <label class="comp-item"><input type="checkbox" class="comp-check" value="RYL"> RYL</label>
+        <label class="comp-item"><input type="checkbox" class="comp-check" value="VIP"> VIP</label>
+        <label class="comp-item"><input type="checkbox" class="comp-check" value="BUS"> BUS</label>
+        <label class="comp-item"><input type="checkbox" class="comp-check" value="ECO"> ECO</label>
+      </div>
+      <div id="compFields"></div>
+    </section>
+
+    <section class="card">
+      <h2>Transit</h2>
+      <div class="comp-controls">
+        <label class="comp-item"><input type="checkbox" class="transit-check" value="RYL"> RYL</label>
+        <label class="comp-item"><input type="checkbox" class="transit-check" value="VIP"> VIP</label>
+        <label class="comp-item"><input type="checkbox" class="transit-check" value="BUS"> BUS</label>
+        <label class="comp-item"><input type="checkbox" class="transit-check" value="ECO"> ECO</label>
+      </div>
+      <div id="transitFields"></div>
+    </section>
+
+    <section class="card">
+      <h2>Totals</h2>
+      <div class="grid">
+        <div class="field"><label>Total</label><input id="total" inputmode="numeric" type="number" min="0"></div>
+        <div class="field"><label>Sales</label><input id="sales" inputmode="numeric" type="number" min="0"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Full Report Preview</h2>
+      <div class="preview" id="preview"></div>
+      <div class="status" id="status"></div>
+      <div class="actions" style="margin-top:10px">
+        <button class="primary" id="copy">Copy</button>
+        <button class="secondary" id="clear">Clear</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Summary Preview</h2>
+      <div class="preview" id="summaryPreview"></div>
+      <div class="actions" style="margin-top:10px">
+        <button class="primary" id="copySummary">Copy</button>
+        <button class="secondary" id="clearSummary" style="display:none">Clear</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const normalPairs = ["RYL", "RFX", "VIP", "VFX", "BUS", "BFX", "ECO", "EFX", "ECL"];
+    const figureIds = {};
+    const figures = document.getElementById("figures");
+
+    function addFigure(name) {
+      const row = document.createElement("div"); row.className = "pair"; row.dataset.name = name;
+      row.innerHTML = `<div class="field"><label>${name}</label><input id="${name}_L" inputmode="numeric" type="number" min="0"></div>
+  <div class="field"><label>RTN</label><input id="${name}_R" inputmode="numeric" type="number" min="0"></div>`;
+      figures.appendChild(row);
+      figureIds[name] = true;
+    }
+    normalPairs.forEach(addFigure);
+
+    function num(id) {const v = document.getElementById(id)?.value; return v === "" || v == null ? null : Number(v)}
+    function val(id) {return num(id) ?? 0}
+    function fmt(v) {return v === "" || v == null ? "" : Number(v).toLocaleString("en-US")}
+    function todayLocal() {const d = new Date(); const off = d.getTimezoneOffset(); return new Date(d.getTime() - off * 60000).toISOString().slice(0, 10)}
+    document.getElementById("date").value = todayLocal();
+
+    function vessel() {
+      return document.getElementById("vessel").value;
+    }
+    function busEnabled() {
+      return ["KLM 4", "KLM 5", "KLM 6"].includes(vessel()) || document.getElementById("enableBus").checked;
+    }
+    function updateBusUI() {
+      const v = vessel(), wrap = document.getElementById("busOptionalWrap");
+      wrap.style.display = ["KLM 7", "KLM 8", "KLM 9"].includes(v) ? "block" : "none";
+      const rows = [...figures.querySelectorAll(".pair")];
+      rows.forEach(r => {if (r.dataset.name === "BUS" || r.dataset.name === "BFX") r.style.display = busEnabled() ? "grid" : "none"});
+      update();
+    }
+    function departureText() {return document.getElementById("departure").value === "custom" ? document.getElementById("customDeparture").value.trim() : document.getElementById("departure").value}
+
+    function buildDate() {
+      const raw = document.getElementById("date").value;
+      const d = new Date(raw + "T00:00:00");
+      return new Intl.DateTimeFormat("en-GB", {weekday: "long", day: "2-digit", month: "short", year: "numeric"}).format(d);
+    }
+
+    function calculateECO() {
+      const ecoField = document.getElementById("ECO_L"), totalField = document.getElementById("total");
+      if (!ecoField || !totalField || totalField.value === "" || ecoField.value !== "") return;
+      let x = 0;
+      x += val("RYL_L") + val("VIP_L") + val("ECL_L");
+      if (busEnabled()) x += val("BUS_L");
+      x += val("RFX_L") + val("VFX_L") + val("EFX_L");
+      if (busEnabled()) x += val("BFX_L");
+      x += val("RYL_R") + val("VIP_R") + val("ECO_R") + val("ECL_R");
+      if (busEnabled()) x += val("BUS_R");
+      x += val("RFX_R") + val("VFX_R") + val("EFX_R");
+      if (busEnabled()) x += val("BFX_R");
+      x += compTotal();
+      x += transitTotal();
+      const result = Number(totalField.value) - x;
+      if (Number.isFinite(result)) ecoField.value = result >= 0 ? result : "";
+    }
+
+    function calculateTotal() {
+      const ecoField = document.getElementById("ECO_L"), totalField = document.getElementById("total");
+      if (ecoField.value === "") return;
+      let total = 0;
+      normalPairs.forEach(n => {
+        if ((n === "BUS" || n === "BFX") && !busEnabled()) return;
+        total += val(n + "_L") + val(n + "_R");
+      });
+      total += compTotal();
+      totalField.value = total;
+      totalField.dataset.manual = "";
+    }
+
+    function buildFull() {
+      let lines = ["Assalaamu Alaykum Boss", `Date: ${buildDate()}`, `Vessel: ${vessel()}`, `Departure: ${departureText()}`, ""];
+      normalPairs.forEach(n => {
+        if ((n === "BUS" || n === "BFX") && !busEnabled()) return;
+        lines.push(`${n}: ${document.getElementById(n + "_L").value === "" ? "" : fmt(document.getElementById(n + "_L").value)}        RTN: ${document.getElementById(n + "_R").value === "" ? "" : fmt(document.getElementById(n + "_R").value)}`);
+      });
+      document.querySelectorAll(".comp-input").forEach(x => {
+        if (x.value !== "") lines.push(`COMP ${x.dataset.cat}: ${fmt(x.value)}`);
+      });
+      document.querySelectorAll(".transit-input").forEach(x => {
+        if (x.value !== "") lines.push(`TRAN ${x.dataset.cat}: ${fmt(x.value)}`);
+      });
+      lines.push("", `Total: ${document.getElementById("total").value === "" ? "" : fmt(document.getElementById("total").value)}`, `Sales: ${document.getElementById("sales").value === "" ? "" : fmt(document.getElementById("sales").value)}`);
+      return lines.join("\n");
+    }
+
+    function compTotal() {
+      let total = 0;
+      document.querySelectorAll(".comp-input").forEach(x => {if (x.value !== "") total += Number(x.value)});
+      return total;
+    }
+    function transitTotal() {
+      let total = 0;
+      document.querySelectorAll(".transit-input").forEach(x => {if (x.value !== "") total += Number(x.value)});
+      return total;
+    }
+    function summary() {
+      const L = val("RYL_L") + val("VIP_L") + (busEnabled() ? val("BUS_L") : 0) + val("ECO_L") + val("ECL_L");
+      const F = val("RFX_L") + val("VFX_L") + (busEnabled() ? val("BFX_L") : 0) + val("EFX_L");
+      const RL = val("RYL_R") + val("VIP_R") + (busEnabled() ? val("BUS_R") : 0) + val("ECO_R") + val("ECL_R");
+      const RF = val("RFX_R") + val("VFX_R") + (busEnabled() ? val("BFX_R") : 0) + val("EFX_R");
+      const T = document.getElementById("total").value === "" ? "" : fmt(document.getElementById("total").value);
+      const lines = ["Assalaamu Alaykum Boss", `Date: ${buildDate()}`, `Vessel: ${vessel()}`, `Departure: ${departureText()}`, `L = ${fmt(L)} | F = ${fmt(F)}`, `R (L) = ${fmt(RL)} | R (F) = ${fmt(RF)}`];
+      const c = compTotal();
+      if (document.querySelectorAll(".comp-input").length > 0) lines.push(`COMP = ${String(c).padStart(2, "0")}`);
+      const t = transitTotal();
+      if (document.querySelectorAll(".transit-input").length > 0) lines.push(`TRAN = ${String(t).padStart(2, "0")}`);
+      lines.push(`Total = ${T}`);
+      return lines.join("\n");
+    }
+
+    function update() {
+      document.getElementById("preview").textContent = buildFull();
+      document.getElementById("summaryPreview").textContent = summary();
+    }
+    document.getElementById("vessel").addEventListener("change", updateBusUI);
+    document.getElementById("departure").addEventListener("change", () => {document.getElementById("customWrap").style.display = document.getElementById("departure").value === "custom" ? "block" : "none"; update()});
+    document.getElementById("enableBus").addEventListener("change", updateBusUI);
+    document.addEventListener("input", e => {
+      const id = e.target.id;
+      if (id === "ECO_L") {
+        if (e.target.value !== "") calculateTotal();
+        update();
+        return;
+      }
+      if (id === "total") {
+        if (document.getElementById("ECO_L").value === "") calculateECO();
+        update();
+        return;
+      }
+      if (document.getElementById("ECO_L").value !== "") calculateTotal();
+      update();
+    });
+    document.querySelectorAll(".comp-check").forEach(c => c.addEventListener("change", () => {
+      const wrap = document.getElementById("compFields");
+      const cat = c.value, existing = document.getElementById("comp_" + cat);
+      if (c.checked && !existing) {
+        const row = document.createElement("div"); row.className = "comp-row";
+        row.innerHTML = `<div class="field"><label>COMP ${cat}</label><input id="comp_${cat}" class="comp-input" data-cat="${cat}" inputmode="numeric" type="number" min="0"></div>`;
+        wrap.appendChild(row);
+      } else if (!c.checked && existing) existing.parentElement.parentElement.remove();
+      if (document.getElementById("ECO_L").value !== "") calculateTotal();
+      update();
+    }));
+    document.querySelectorAll(".transit-check").forEach(c => c.addEventListener("change", () => {
+      const wrap = document.getElementById("transitFields"), cat = c.value, existing = document.getElementById("transit_" + cat);
+      if (c.checked && !existing) {
+        const row = document.createElement("div"); row.className = "comp-row";
+        row.innerHTML = `<div class="field"><label>TRAN ${cat}</label><input id="transit_${cat}" class="transit-input" data-cat="${cat}" inputmode="numeric" type="number" min="0"></div>`;
+        wrap.appendChild(row);
+      } else if (!c.checked && existing) existing.parentElement.parentElement.remove();
+      if (document.getElementById("ECO_L").value !== "") calculateTotal();
+      update();
+    }));
+
+    document.getElementById("copy").onclick = async () => {try {await navigator.clipboard.writeText(buildFull()); document.getElementById("status").textContent = "Full report copied to clipboard."} catch (e) {document.getElementById("status").textContent = "Copy failed."} };
+    document.getElementById("copySummary").onclick = async () => {try {await navigator.clipboard.writeText(summary()); document.getElementById("status").textContent = "Summary copied to clipboard."} catch (e) {document.getElementById("status").textContent = "Copy failed."} };
+    document.getElementById("clear").onclick = () => {
+      normalPairs.forEach(n => {document.getElementById(n + "_L").value = ""; document.getElementById(n + "_R").value = ""; document.getElementById(n + "_L").dataset.manual = ""; document.getElementById(n + "_R").dataset.manual = ""});
+      document.getElementById("total").value = ""; document.getElementById("total").dataset.manual = ""; document.getElementById("sales").value = "";
+      document.querySelectorAll(".comp-check").forEach(c => c.checked = false); document.getElementById("compFields").innerHTML = "";
+      document.querySelectorAll(".transit-check").forEach(c => c.checked = false); document.getElementById("transitFields").innerHTML = "";
+      document.getElementById("status").textContent = "Number fields cleared."; update();
+    };
+    document.getElementById("customDeparture").addEventListener("input", update);
+    updateBusUI();
+  </script>
+</body>
+
+</html>
